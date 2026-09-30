@@ -2,7 +2,7 @@ let canvas;
 let ctx;
 
 // Physics engine
-const TRIANGLE_COUNT = 10;
+const TRIANGLE_COUNT = 20;
 const { Engine, Bodies, Body, Composite } = Matter;
 const engine = Engine.create();
 engine.gravity.y = 1.0;
