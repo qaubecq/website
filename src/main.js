@@ -2,17 +2,22 @@ let canvas;
 let ctx;
 
 // Physics engine
+const TRIANGLE_COUNT = 10;
 const { Engine, Bodies, Body, Composite } = Matter;
 const engine = Engine.create();
 engine.gravity.y = 1.0;
-const triangle = Bodies.fromVertices(200, 100, [[
-    { x: 0,  y: 0 },
-    { x: 80, y: 0 },
-    { x: 40, y: 70 }
-]], {restitution: 1.2, friction: 0.0, frictionAir: 0});
-Body.setVelocity(triangle, { x: 20, y: -8 });
-Body.setAngularVelocity(triangle, 0.2);
-Composite.add(engine.world, triangle);
+let triangles = []
+function buildTriangles() {
+    for (let i = 0; i < TRIANGLE_COUNT; i++) {
+        triangles.push(Bodies.fromVertices((canvas.width / (TRIANGLE_COUNT+2)) * (i+1), 100, [[
+            { x: 0,  y: 0 },
+            { x: 80, y: 0 },
+            { x: 0, y: 80 }
+        ]], {restitution: 1.15, friction: 0.5, frictionAir: 0}));
+        Body.setVelocity(triangles[triangles.length-1], {x: 20, y: -8});
+        Composite.add(engine.world, triangles[triangles.length-1]);
+    }
+}
 
 let walls = [];
 function buildWalls() {
@@ -31,6 +36,7 @@ function setup() {
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext('2d');
     resize();
+    buildTriangles();
     loop();
 }
 
@@ -53,7 +59,11 @@ function draw() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.fillStyle = 'tomato';
-    drawBody(triangle);
+    for (let i = 0; i < triangles.length-1; i++) {
+        drawBody(triangles[i]);
+    }
+    ctx.fillStyle = '#00ff00';
+    drawBody(triangles[triangles.length-1]);
 }
 
 
